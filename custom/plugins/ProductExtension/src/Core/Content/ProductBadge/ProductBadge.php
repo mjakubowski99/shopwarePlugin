@@ -13,6 +13,8 @@ class ProductBadge extends Entity
 
     protected string $name;
 
+    private string $productId;
+
     public function getName(): string
     {
         return $this->name;
@@ -21,5 +23,15 @@ class ProductBadge extends Entity
     public function setName(string $name): void
     {
         $this->name = $name;
+    }
+
+    public function getProductId(): string
+    {
+        return $this->productId;
+    }
+
+    public function setProductId(string $productId): void
+    {
+        $this->productId = $productId;
     }
 }

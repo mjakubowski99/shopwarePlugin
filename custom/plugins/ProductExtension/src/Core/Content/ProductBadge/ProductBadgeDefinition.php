@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace ProductExtension\Core\Content\ProductBadge;
 
+use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\ApiAware;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\IdField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\OneToOneAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\TranslatedField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\TranslationsAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
@@ -28,6 +30,7 @@ class ProductBadgeDefinition extends EntityDefinition
         return new FieldCollection([
             (new IdField('id','id'))->addFlags(new Required(), new PrimaryKey()),
             (new TranslatedField('name'))->addFlags(new ApiAware(), new Required()),
+            (new OneToOneAssociationField('product', 'product_id', 'id', ProductDefinition::class)),
             (new TranslationsAssociationField(
                 ProductBadgeTranslation::class,
                 'product_badge_id'

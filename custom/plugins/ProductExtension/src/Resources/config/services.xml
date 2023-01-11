@@ -27,8 +27,7 @@
         <service id="ProductExtension\Subscriber\BeforeLineItemAddedEventSubscriber">
             <tag name="kernel.event_subscriber"/>
             <argument type="service" id="Symfony\Component\Messenger\MessageBusInterface"/>
-            <argument type="service" id="Psr\Log\LoggerInterface"/>
-            <argument type="service" id="product.repository"/>
+            <argument type="service" id="product_badge.repository"/>
         </service>
     </services>
 </container>

@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace ProductExtension\Subscriber;
 
-use Psr\Log\LoggerInterface;
+use ProductExtension\Core\Content\ProductBadge\ProductBadge;
+use ProductExtension\MessageQueue\Message\ProductAddedToCartNotification;
+use Ramsey\Uuid\Uuid;
 use Shopware\Core\Checkout\Cart\Event\BeforeLineItemAddedEvent;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -16,14 +18,12 @@ use Symfony\Component\Messenger\MessageBusInterface;
 class BeforeLineItemAddedEventSubscriber implements EventSubscriberInterface
 {
     private MessageBusInterface $bus;
-    private LoggerInterface $logger;
-    private EntityRepository $entityRepository;
+    private EntityRepository $productBadgeRepository;
 
-    public function __construct(MessageBusInterface $bus, LoggerInterface $logger, EntityRepository $entityRepository)
+    public function __construct(MessageBusInterface $bus, EntityRepository $productRepository)
     {
         $this->bus = $bus;
-        $this->logger = $logger;
-        $this->entityRepository = $entityRepository;
+        $this->productBadgeRepository = $productRepository;
     }
 
     public static function getSubscribedEvents(): array
@@ -43,10 +43,23 @@ class BeforeLineItemAddedEventSubscriber implements EventSubscriberInterface
         }
 
         $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('id', $event->getLineItem()->getReferencedId()));
+        $criteria->getAssociation('product')->addFilter(
+            new EqualsFilter('id', $event->getLineItem()->getReferencedId())
+        );
 
-        $product = $this->entityRepository->search($criteria, $event->getContext())->first();
+        /** @var ProductBadge $productBadge */
+        $productBadge = $this->productBadgeRepository->search($criteria, $event->getContext())->first();
+        if ($productBadge === null) {
+            $this->productBadgeRepository->create([
+                [
+                    'name' => Uuid::uuid4()."-badge",
+                    'product' => $event->getLineItem()->getReferencedId()
+                ]
+            ], $event->getContext());
 
-        $this->logger->alert($product->productBadge);
+            $productBadge = $this->productBadgeRepository->search($criteria, $event->getContext())->first();
+        }
+
+        $this->bus->dispatch(new ProductAddedToCartNotification($productBadge->getName()));
     }
 }

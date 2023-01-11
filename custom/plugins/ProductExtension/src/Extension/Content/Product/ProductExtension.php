@@ -7,7 +7,6 @@ namespace ProductExtension\Extension\Content\Product;
 use ProductExtension\Core\Content\ProductBadge\ProductBadgeDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityExtension;
-use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Inherited;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\OneToOneAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 
@@ -21,8 +20,8 @@ class ProductExtension extends EntityExtension
                 'product_badge_id',
                 'id',
                 ProductBadgeDefinition::class,
-                true
-            ))->addFlags(new Inherited())
+                false
+            ))
         );
     }
 
