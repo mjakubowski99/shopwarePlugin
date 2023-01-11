@@ -13,6 +13,8 @@
 /config/packages/local.yaml
 /config/packages/local.yml
 
+/custom/apps/*
+/custom/plugins/*
 !/custom/plugins/ProductExtension/
 !/custom/plugins/ProductExtension/**
 
