@@ -14,7 +14,8 @@
 /config/packages/local.yml
 
 /custom/*
-!custom/plugins/ProductExtension/**
+!/custom/plugins/ProductExtension/
+!/custom/plugins/ProductExtension/**
 
 schema/
 
