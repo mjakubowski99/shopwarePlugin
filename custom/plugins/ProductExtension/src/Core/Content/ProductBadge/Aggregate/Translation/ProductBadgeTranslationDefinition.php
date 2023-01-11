@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace ProductExtension\Core\Content\ProductBadge\Aggregate\Translation;
 
+use ProductExtension\Core\Content\ProductBadge\ProductBadge;
+use ProductExtension\Core\Content\ProductBadge\ProductBadgeDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityTranslationDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
@@ -21,7 +23,7 @@ class ProductBadgeTranslationDefinition extends EntityTranslationDefinition
 
     public function getParentDefinitionClass(): string
     {
-        return ProductDefinition::class;
+        return ProductBadgeDefinition::class;
     }
 
     public function getEntityClass(): string

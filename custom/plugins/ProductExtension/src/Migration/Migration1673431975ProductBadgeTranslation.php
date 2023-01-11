@@ -20,6 +20,8 @@ class Migration1673431975ProductBadgeTranslation extends MigrationStep
                 `product_badge_id` BINARY(16) NOT NULL,
                 `language_id` BINARY(16) NOT NULL,
                 `name` VARCHAR(255),
+                `created_at` DATETIME(3) NOT NULL,
+                `updated_at` DATETIME(3) NULL,
                 PRIMARY KEY (`product_badge_id`, `language_id`),
                 CONSTRAINT `fk.product_badge_translation.product_badge_id` FOREIGN KEY (`product_badge_id`)
                 REFERENCES `product_badge` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,

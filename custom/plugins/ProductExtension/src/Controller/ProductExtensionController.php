@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ProductExtension\Controller;
 
+use Shopware\Core\Content\Product\ProductEntity;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -30,29 +31,6 @@ class ProductExtensionController extends StorefrontController
         return $this->renderStorefront('@ProductExtension/productExtension/index.html.twig', [
             'config' => $this->systemConfigService->get('ProductExtension.config.email')
         ]);
-    }
-
-    /** @Route ("/productExtension2", name="productExtension2", methods={"GET"}) */
-    public function showTest(): Response
-    {
-        /** @var EntityRepository $repo */
-       $repo = $this->container->get('product_badge.repository');
-
-        /** @var EntityRepository $productRepo */
-       $productRepo = $this->container->get('product.repository');
-
-       $productId = $productRepo->searchIds(new Criteria(), Context::createDefaultContext())->firstId();
-
-       dump($repo->create([
-           [
-               'productId' => $productId,
-               'translations' => [
-                   Defaults::LANGUAGE_SYSTEM => ['name' => 'Badge translation']
-               ]
-           ]
-       ], Context::createDefaultContext()));
-
-       return new Response("Res");
     }
 }
 

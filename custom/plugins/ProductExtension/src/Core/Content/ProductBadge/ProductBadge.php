@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace ProductExtension\Core\Content\ProductBadge;
 
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
-use ProductExtension\Core\Content\ProductBadge\Aggregate\Translation\ProductBadgeTranslationCollection;
 
 class ProductBadge
 {
@@ -14,8 +13,6 @@ class ProductBadge
     protected string $name;
 
     protected string $productId;
-
-    protected $translations;
 
     public function getName(): string
     {
@@ -35,15 +32,5 @@ class ProductBadge
     public function getProductId(): string
     {
         return $this->productId;
-    }
-
-    public function getTranslations(): ?ProductBadgeTranslationCollection
-    {
-        return $this->translations;
-    }
-
-    public function setTranslations(ProductBadgeTranslationCollection $translations)
-    {
-        $this->translations = $translations;
     }
 }

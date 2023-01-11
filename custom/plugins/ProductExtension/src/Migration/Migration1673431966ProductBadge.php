@@ -18,7 +18,9 @@ class Migration1673431966ProductBadge extends MigrationStep
         $query = <<<SQL
             CREATE TABLE IF NOT EXISTS `product_badge` (
                 `id` BINARY(16) NOT NULL,
-                `product_id` BINARY(16) NOT NULL,
+                `product_id` BINARY(16) NOT NULL UNIQUE,
+                `created_at` DATETIME(3) NOT NULL,
+                `updated_at` DATETIME(3) NULL,
                 PRIMARY KEY (`id`),
                 CONSTRAINT `fk.product_badge.product_id` FOREIGN KEY (`product_id`)
                 REFERENCES `product` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
