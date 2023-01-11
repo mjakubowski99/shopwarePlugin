@@ -15,10 +15,13 @@ class ProductBadgeNotificationHandler extends AbstractMessageHandler
         return [ProductBadgeNotification::class];
     }
 
-    /** @var ProductBadgeNotification $message */
+    /**
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @var ProductBadgeNotification $message
+     */
     public function handle($message): void
     {
         $client = new Client();
-        $client->get('/'.$message->getBadgeName());
+        $client->get('https://example.com/'.$message->getBadgeName());
     }
 }
