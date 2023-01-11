@@ -23,7 +23,7 @@
         <service id="ProductExtension\Extension\Content\Product\ProductExtension">
             <tag name="shopware.entity.extension"/>
         </service>
-        <service id="ProductExtension\Subscriber\BeforeLineItemAddedEventSubscriber">
+        <service id="ProductExtension\Subscriber\BeforeLineItemAddedEventSubscriber" public="true">
             <tag name="kernel.event_subscriber"/>
             <argument type="service" id="Symfony\Component\Messenger\MessageBusInterface"/>
             <argument type="service" id="product_badge.repository"/>

@@ -4,17 +4,16 @@ declare(strict_types=1);
 
 namespace ProductExtension\Subscriber;
 
-use ProductExtension\Core\Content\ProductBadge\ProductBadge;
 use ProductExtension\Core\ProductBadgeNames;
 use ProductExtension\MessageQueue\Message\ProductBadgeNotification;
 use Shopware\Core\Checkout\Cart\Event\BeforeLineItemAddedEvent;
-use Shopware\Core\Checkout\Cart\Event\CartChangedEvent;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\Struct\ArrayEntity;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -39,21 +38,24 @@ class BeforeLineItemAddedEventSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $productId = $event->getLineItem()->getReferencedId();
-
-        try{
-            $productBadge = $this->getBadgeForProduct($productId, $event->getContext());
-        } catch (NotFoundHttpException $exception) {
-            $productBadge = $this->createBadgeForProductWithRandomNameInDefaultLanguage($productId, $event->getContext());
-        }
-
-        $this->bus->dispatch(new ProductBadgeNotification($productBadge->getName()));
+        $this->addBadgeToMessageQueue($event->getLineItem()->getReferencedId(), $event->getContext());
     }
 
-    private function getBadgeForProduct(string $productId, Context $context): ProductBadge
+    public function addBadgeToMessageQueue(string $productId, Context $context): void
+    {
+        try{
+            $productBadge = $this->getBadgeForProduct($productId, $context);
+        } catch (NotFoundHttpException $exception) {
+            $productBadge = $this->createBadgeForProductWithRandomNameInDefaultLanguage($productId, $context);
+        }
+
+        $this->bus->dispatch(new ProductBadgeNotification($productBadge->get('name')));
+    }
+
+    private function getBadgeForProduct(string $productId, Context $context): ArrayEntity
     {
         $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('product_id', $productId));
+        $criteria->addFilter(new EqualsFilter('productId', $productId));
 
         $productBadge = $this->productBadgeRepository->search($criteria, $context)->first();
 
@@ -61,11 +63,12 @@ class BeforeLineItemAddedEventSubscriber implements EventSubscriberInterface
             throw new NotFoundHttpException("Badge for product not found");
         }
 
-        /** @var ProductBadge */
+
+        /** @var ArrayEntity */
         return $productBadge;
     }
 
-    private function createBadgeForProductWithRandomNameInDefaultLanguage(string $productId, Context $context): ProductBadge
+    private function createBadgeForProductWithRandomNameInDefaultLanguage(string $productId, Context $context): ArrayEntity
     {
         $this->productBadgeRepository->create([
             'productId' => $productId,
